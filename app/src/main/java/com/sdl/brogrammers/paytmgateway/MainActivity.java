@@ -37,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFunctions m_Functions;
     private final int ActivityRequestCode = 0x0abc;
 
-    final Double TXN_AMOUNT = 1.0;
-    final String ORDER_ID = "ORDER0001";
-    final String CUST_ID = "athang213";
-    final String EMAIL = "athang213@gmail.com";
-    final String MOBILE_NO = "9819785790";
+    Double TXN_AMOUNT;
+    String ORDER_ID;
+    String CUST_ID;
+    String EMAIL;
+    String MOBILE_NO;
 
     String CHECKSUMHASH;
     String MID;
@@ -61,38 +61,40 @@ public class MainActivity extends AppCompatActivity {
 
     public void getPaymentDetails(View view) throws JSONException {
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("ORDER_ID", ORDER_ID);
-        data.put("CUST_ID", CUST_ID);
-        data.put("TXN_AMOUNT", TXN_AMOUNT);
-        data.put("EMAIL", EMAIL);
-        data.put("MOBILE_NO", MOBILE_NO);
-
         JsonObjectRequest checksumRequest = new JsonObjectRequest(Request.Method.POST,
                 "https://us-central1-spotsale-50962.cloudfunctions.net/generate_checksum",
-                new JSONObject(data),
+                new JSONObject(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            CHECKSUMHASH = response.getString("checksum");
-                            MID = response.getString("mid");
-                            WEBSITE = response.getString("website");
-                            CHANNEL_ID = response.getString("channel_id");
-                            INDUSTRY_TYPE_ID = response.getString("industry");
-                            MERCHANT_KEY = response.getString("merchant_key");
-                            CALLBACK_URL = response.getString("callback_url");
+                            MID = response.getString("MID");
+                            ORDER_ID = response.getString("ORDER_ID");
+                            CUST_ID = response.getString("CUST_ID");
+                            INDUSTRY_TYPE_ID = response.getString("INDUSTRY_TYPE_ID");
+                            CHANNEL_ID = response.getString("CHANNEL_ID");
+                            TXN_AMOUNT = response.getDouble("");
+                            WEBSITE = response.getString("WEBSITE");
+                            CALLBACK_URL = response.getString("CALLBACK_URL");
+                            EMAIL = response.getString("EMAIL");
+                            MOBILE_NO = response.getString("MOBILE_NO");
+                            CHECKSUMHASH = response.getString("CHECKSUMHASH");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         //Toast.makeText(getApplicationContext(), "ChecksumHash : " + CHECKSUMHASH, Toast.LENGTH_SHORT).show();
-                        Log.d("CHECKSUMHASH", CHECKSUMHASH);
                         Log.d("MID", MID);
-                        Log.d("WEBSITE", WEBSITE);
-                        Log.d("CHANNEL_ID", CHANNEL_ID);
+                        Log.d("ORDER_ID", ORDER_ID);
+                        Log.d("CUST_ID", CUST_ID);
                         Log.d("INDUSTRY_TYPE_ID", INDUSTRY_TYPE_ID);
-                        Log.d("MERCHANT_KEY", MERCHANT_KEY);
+                        Log.d("CHANNEL_ID", CHANNEL_ID);
+                        Log.d("TXN_AMOUNT", String.valueOf(TXN_AMOUNT));
+                        Log.d("WEBSITE", WEBSITE);
                         Log.d("CALLBACK_URL", CALLBACK_URL);
+                        Log.d("EMAIL", EMAIL);
+                        Log.d("MOBILE_NO", MOBILE_NO);
+                        Log.d("CHECKSUMHASH", CHECKSUMHASH);
+
 
                         startPayment();
                     }
